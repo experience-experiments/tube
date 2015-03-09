@@ -9,8 +9,6 @@ define(['vendor/d3.v2.min', 'tube'], function(d3, tube) {
   var connectionBarWidth = 5;
   var longestRouteLength = 0;
 
-  // the function used to render the route
-  var showFn;
 
   function resizeSVG(route) {
 	  var height = (stationGap * route.length) + 20;
@@ -103,38 +101,6 @@ define(['vendor/d3.v2.min', 'tube'], function(d3, tube) {
       .transition().duration(500).delay(function(s,i) {
         return (i*90) + 450;
       })
-      .text(function(s, i) {
-        return tube.routeDescription(i, route);
-      });
-  }
-
-  function showWithTable(route) {
-    // data join
-    var nodes = vis.selectAll(".station").data(route);
-
-    // enter
-    var station = nodes.enter()
-      .append("tr")
-      .attr("class", "station");
-
-    station.append("td")
-      .attr("class", "station-td")
-    station.append("td")
-      .attr("class", "station-name")
-    station.append("td")
-      .attr("class", "station-description-label");
-    
-    // exit
-    nodes.exit().remove();
-
-    vis.selectAll(".station-td")
-      .data(route)
-      .attr("style", function(s) { return "background: " + s.lineData.colour;});
-    vis.selectAll(".station-name")
-      .data(route)
-      .text(function(s) { console.log(s.name); return s.name;});
-    vis.selectAll(".station-description-label")
-      .data(route)
       .text(function(s, i) {
         return tube.routeDescription(i, route);
       });
