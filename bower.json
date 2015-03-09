@@ -1,0 +1,9 @@
+{
+	"name": "simple-tube-journey-planner",
+	"version": "0.0.0",
+	"dependencies": {
+		"d3": "~3.5.5",
+		"requirejs": "~2.1.16"
+	},
+	"devDependencies": {}
+}
