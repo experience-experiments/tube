@@ -1,41 +1,14 @@
-[Tube](http://indy.github.com/tube/)
+Simple tube journey planner
 ====
 
-[Tube](http://indy.github.com/tube/) is a purely client-side web app that implements the A* algorithm for finding routes between stations on the London Underground
+Simple tube journey planner is a purely client-side web app / chrome extension that helps you find your way through London Underground
 
-It's developed with the following technologies:
+Thanks to [@indy](http://github.com/indy) for the original implementation of tube network data and the routing algorithm.
 
-* [D3](http://d3js.org)
-* [yeoman.io](http://yeoman.io/)
-* [jasmine](http://pivotal.github.com/jasmine/)
-* [require.js](http://requirejs.org/)
-* [Bootstrap](http://twitter.github.com/bootstrap/)
-
-Pre-requisites
---------------
-
-[yeoman.io](http://yeoman.io/) is required. You can install this with: `curl -L get.yeoman.io | bash`
-
-Quick start
------------
-
-* Run the tests: `yeoman test`
-* Start a development server with live reloading: `yeoman server`
-* Build a release version: `yeoman build`
-
-Author
--------
-
-**Inderjit Gill**
-
-+ http://github.com/indy
 
 
 Copyright and license
 ---------------------
-
-Twitter Bootstrap Copyright 2012 Twitter, Inc.
-All rights reserved.
 
 D3 library Copyright (c) 2012, Michael Bostock
 All rights reserved.
