@@ -53,7 +53,6 @@ define(['network', 'stations', 'connections'], function (Network, stations, conn
 		// alongside the i'th station on the route
 		routeDescription: function (i, route) {
 			var station = route[i];
-			var prev = route[i - 1];
 
 			switch (stationNotability(station, i, route)) {
 
@@ -64,10 +63,10 @@ define(['network', 'stations', 'connections'], function (Network, stations, conn
 					return "Reached destination";
 
 				case notability.changeLine:
-					return "Change from " + prev.connection.line + " line to the " + station.connection.line + " line " + station.connection.direction;
+					return "Change to " + station.connection.line + " line " + station.connection.direction;
 
 				case notability.changeDirection:
-					return "Make sure it's the " + station.connection.direction + " train";
+					return "Hop on to " + station.connection.direction;
 
 				default:
 					return "";

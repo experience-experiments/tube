@@ -6,7 +6,7 @@ define(['d3', 'tube'], function (d3, tube) {
 	var vis;
 
 	// the height of each station list element
-	var stationGap = 50;
+	var stationGap = 80;
 
 	var connectionBarWidth = 5;
 	var longestRouteLength = 0;
