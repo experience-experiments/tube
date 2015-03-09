@@ -1,4 +1,6 @@
-define(['tube', 'vis'], function(tube, vis) {
+'use strict';
+
+define(['tube', 'vis'], function (tube, vis) {
 
 	var sheet = document.querySelector('#sheet');
 	var fromEl = document.querySelector('#startStation');
@@ -7,7 +9,7 @@ define(['tube', 'vis'], function(tube, vis) {
 
 	function getRoute(from, to) {
 		var r = tube.route(from, to);
-		if(r.success === true) {
+		if (r.success === true) {
 			vis.showRoute(r.path);
 		} else {
 			sheet.innerHTML = r.message;
@@ -16,13 +18,13 @@ define(['tube', 'vis'], function(tube, vis) {
 	}
 
 	return {
-		init: function() {
+		init: function () {
 
 			fromEl.value = 'Liverpool Street';
 
 			toEl.value = 'Camden Town';
 
-			submitEl.onclick = function(){
+			submitEl.onclick = function () {
 				return getRoute(fromEl.value, toEl.value);
 			};
 

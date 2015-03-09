@@ -1,95 +1,77 @@
-define(['network', 'stations', 'connections'], function(Network, stations, connections) {
+'use strict';
 
-  // create a Network using the London Underground's stations and connections
-  var network = new Network(stations, connections);
+define(['network', 'stations', 'connections'], function (Network, stations, connections) {
 
-  function debug(route) {
-    var i;
-    var changes = 0;
+	// create a Network using the London Underground's stations and connections
+	var network = new Network(stations, connections);
 
-    for(i=1;i<route.length;i++) {
-      var station = route[i];
-      var prev = route[i-1];
-      if(prev.connection.line !== station.connection.line) {
-        changes += 1;
-      }      
-    }
-    console.log(route);
-    console.log("changes = " + changes);
-  }
+	var notability = {
+		last: 4,
+		first: 3,
+		changeLine: 2,
+		changeDirection: 1,
+		none: 0
+	};
 
+	// is there anything interesting about the given station for this route?
+	function stationNotability(station, index, route) {
+		if (index === 0) {
+			return notability.first;
+		}
+		if (index === route.length - 1) {
+			return notability.last;
+		}
+		var prev = route[index - 1];
+		if (prev.connection.line !== station.connection.line) {
+			return notability.changeLine;
+		}
+		if (prev.connection.direction !== station.connection.direction) {
+			return notability.changeDirection;
+		}
+		return notability.none;
+	}
 
-  var notability = {
-    last: 4,
-    first: 3,
-    changeLine: 2,
-    changeDirection: 1,
-    none: 0
-  };
+	return {
+		stationNames: function () {
+			var names = network.connectedStations.map(function (station) {
+				return station.name;
+			});
+			return names;
+		},
 
-  // is there anything interesting about the given station for this route?
-  function stationNotability(station, index, route) {
-    if(index === 0) {
-      return notability.first;
-    }
-    if(index === route.length - 1) {
-      return notability.last;
-    }
-    var prev = route[index - 1];
-    if(prev.connection.line !== station.connection.line) {
-      return notability.changeLine;
-    }
-    if(prev.connection.direction !== station.connection.direction) {
-      return notability.changeDirection;
-    }
-    return notability.none;
-  }
-
-  return {
-    stationNames: function() {
-      var names = network.connectedStations.map(function(station) {
-        return station.name;
-      });
-      return names;
-    },
-
-    route: function(from, to) {
-      var r = network.route(from, to);
+		route: function (from, to) {
+			var r = network.route(from, to);
 //      debug(r.path);
-      return r;
-    },
+			return r;
+		},
 
-    network: function() {
-      return network;
-    },
+		network: function () {
+			return network;
+		},
 
-    // return a description that should be displayed 
-    // alongside the i'th station on the route
-    routeDescription: function(i, route) {
-      var station = route[i];
-      var prev = route[i-1];
+		// return a description that should be displayed
+		// alongside the i'th station on the route
+		routeDescription: function (i, route) {
+			var station = route[i];
+			var prev = route[i - 1];
 
-      switch(stationNotability(station, i, route)) {
-        
-      case notability.first:
-        return station.connection.line + " line";
-        break;
+			switch (stationNotability(station, i, route)) {
 
-      case notability.last:
-        return "Reached destination"
-        break;
+				case notability.first:
+					return station.connection.line + " line";
 
-      case notability.changeLine:
-        return "Change from " + prev.connection.line +  " line to the " + 
-          station.connection.line + " line " + station.connection.direction;
-        break;
+				case notability.last:
+					return "Reached destination";
 
-      case notability.changeDirection:
-        return "Make sure it's the " + station.connection.direction + " train";
-        break;
+				case notability.changeLine:
+					return "Change from " + prev.connection.line + " line to the " + station.connection.line + " line " + station.connection.direction;
 
-      default: return "";
-      }      
-    }
-  };
+				case notability.changeDirection:
+					return "Make sure it's the " + station.connection.direction + " train";
+
+				default:
+					return "";
+			}
+		}
+	};
 });

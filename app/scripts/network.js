@@ -1,282 +1,286 @@
-define(['pqueue'], function(PQueue) {
+'use strict';
 
-  /** Station constructor */
-  function Station(args) {
-    // [name, lng, lat]
-    this.id = args[0];
-    this.name = args[1];
+define(['pqueue'], function (PQueue) {
 
-    this.lng = args[2];
-    this.lat = args[3];
-    this.connections = [];
+	/** Station constructor */
+	function Station(args) {
+		// [name, lng, lat]
+		this.id = args[0];
+		this.name = args[1];
 
-    // used for comparison testing against user input
-    this.lowercaseName = this.name.toLowerCase();
+		this.lng = args[2];
+		this.lat = args[3];
+		this.connections = [];
 
-    this.addConnection = function(c) {
-      this.connections.push(c);
-    }
-  }
+		// used for comparison testing against user input
+		this.lowercaseName = this.name.toLowerCase();
 
-  /** Connection constructor */
-  function Connection (args) {
-    // [line, direction, destination station]
-    this.line = args[0];
-    this.direction = args[1];
-    this.dest = args[2];
-  }
+		this.addConnection = function (c) {
+			this.connections.push(c);
+		};
+	}
 
-  function PathNode (data, g, h, fromPathNode) {
-    this.station = data[0];
-    this.connection = data[1];
+	/** Connection constructor */
+	function Connection(args) {
+		// [line, direction, destination station]
+		this.line = args[0];
+		this.direction = args[1];
+		this.dest = args[2];
+	}
 
-    this.g = g;
-    this.h = h;
-    this.f = g + h;
+	function PathNode(data, g, h, fromPathNode) {
+		this.station = data[0];
+		this.connection = data[1];
 
-    this.fromPathNode = fromPathNode;
-  }
+		this.g = g;
+		this.h = h;
+		this.f = g + h;
 
-  function distance (stationA, stationB) {
-    var lngDelta = stationA.lng - stationB.lng;
-    var latDelta = stationA.lat - stationB.lat;
-    return Math.sqrt((lngDelta * lngDelta) + (latDelta * latDelta));
-  }
+		this.fromPathNode = fromPathNode;
+	}
 
-  function travelTime (stationA, stationB) {
-    // for the moment just assume speed is a constant of 1 unit
-    // will have to take lng,lat into account if using another
-    // more realistic speed
-    return distance(stationA, stationB);
-  }
+	function distance(stationA, stationB) {
+		var lngDelta = stationA.lng - stationB.lng;
+		var latDelta = stationA.lat - stationB.lat;
+		return Math.sqrt((lngDelta * lngDelta) + (latDelta * latDelta));
+	}
 
-  function createPriorityQueue () {
-    var compFn = function (a, b) {
-      return a.f - b.f;
-    };
+	function travelTime(stationA, stationB) {
+		// for the moment just assume speed is a constant of 1 unit
+		// will have to take lng,lat into account if using another
+		// more realistic speed
+		return distance(stationA, stationB);
+	}
 
-    var identFn = function (pathNode, obj) {
-      return pathNode.connection === obj.connection &&
-        prevConnection(pathNode.fromPathNode) === obj.prevConnection &&
-        pathNode.station.lowercaseName === obj.connectingStation.lowercaseName;
-    };
+	function createPriorityQueue() {
+		var compFn = function (a, b) {
+			return a.f - b.f;
+		};
 
-    // the 'open' priority queue stores the pathNodes on the frontier
-    return new PQueue(compFn, identFn);
-  }
+		var identFn = function (pathNode, obj) {
+			return pathNode.connection === obj.connection &&
+				prevConnection(pathNode.fromPathNode) === obj.prevConnection &&
+				pathNode.station.lowercaseName === obj.connectingStation.lowercaseName;
+		};
 
-  function constructConnection(line, direction, opposingDirection, from, to) {
-    from.addConnection(new Connection([line, direction, to]));
-    to.addConnection(new Connection([line, opposingDirection, from]));
-  }
+		// the 'open' priority queue stores the pathNodes on the frontier
+		return new PQueue(compFn, identFn);
+	}
 
-  function prevConnection(pathNode) {
-    return pathNode.connection === undefined ? "" : pathNode.connection.line
-  }
+	function constructConnection(line, direction, opposingDirection, from, to) {
+		from.addConnection(new Connection([line, direction, to]));
+		to.addConnection(new Connection([line, opposingDirection, from]));
+	}
 
-  // would going to the next connection mean switching lines?
-  function switchingLines(pathNode, connection) {
-    if(pathNode.connection === undefined) {
-      return false;
-    }
-    if(pathNode.connection.line === connection.line) {
-      return false;
-    }
-    return true;
-  }
+	function prevConnection(pathNode) {
+		return pathNode.connection === undefined ? "" : pathNode.connection.line;
+	}
 
-  // this is the Tube.Network object
-  //
-  var Network = function (stationData, connectionData) {
-    var s, c;
-    var stationsByID = {};    // used for looking up connectivity info
-    var stations = {};
+	// would going to the next connection mean switching lines?
+	function switchingLines(pathNode, connection) {
+		if (pathNode.connection === undefined) {
+			return false;
+		}
+		if (pathNode.connection.line === connection.line) {
+			return false;
+		}
+		return true;
+	}
 
-    // the ids of all the stations that have connection data
-    var connectedStations = {};
+	// this is the Tube.Network object
+	//
+	var Network = function (stationData, connectionData) {
+		var s;
+		var stationsByID = {};    // used for looking up connectivity info
+		var stations = {};
 
-    var ld = {};                // lineData
+		// the ids of all the stations that have connection data
+		var connectedStations = {};
 
-    // create the station objects and also build the stationsByID
-    // structure which is used during the connection stage
-    stationData.forEach(function(stationConfig) {
-      s = new Station(stationConfig);
-      stations[s.lowercaseName] = s;
-      stationsByID[s.id] = s;
-    });
+		var ld = {};                // lineData
 
-    
-    var branch, segment, i;
-    connectionData.forEach(function(connectionConfig) {
-      var line = connectionConfig[0];
-      var lineData = connectionConfig[1];
+		// create the station objects and also build the stationsByID
+		// structure which is used during the connection stage
+		stationData.forEach(function (stationConfig) {
+			s = new Station(stationConfig);
+			stations[s.lowercaseName] = s;
+			stationsByID[s.id] = s;
+		});
 
-      ld[line] = lineData;
 
-      for(branch = 2;branch < connectionConfig.length;branch++) {
-        segment = connectionConfig[branch];
+		var branch, segment, i;
+		connectionData.forEach(function (connectionConfig) {
+			var line = connectionConfig[0];
+			var lineData = connectionConfig[1];
 
-        for(i=0;i<segment.connections.length - 1;i++) {
-          connectedStations[segment.connections[i]] = true;
-          connectedStations[segment.connections[i+1]] = true;
-          constructConnection(line, 
-                              segment.direction, 
-                              segment.opposingDirection, 
-                              stationsByID[segment.connections[i]], 
-                              stationsByID[segment.connections[i+1]]);
-        }
-      }
-    });
+			ld[line] = lineData;
 
-    this.lineData = ld;
+			for (branch = 2; branch < connectionConfig.length; branch++) {
+				segment = connectionConfig[branch];
 
-    this.connectedStations = []
-    for(var key in connectedStations) {
-      this.connectedStations.push(stationsByID[key]);
-    }
+				for (i = 0; i < segment.connections.length - 1; i++) {
+					connectedStations[segment.connections[i]] = true;
+					connectedStations[segment.connections[i + 1]] = true;
+					constructConnection(line,
+						segment.direction,
+						segment.opposingDirection,
+						stationsByID[segment.connections[i]],
+						stationsByID[segment.connections[i + 1]]);
+				}
+			}
+		});
 
-    this.stations = stations;
+		this.lineData = ld;
 
-    // update network representation with any disruptions
-    this.update = function () {
-      // todo: implement
-    };
+		this.connectedStations = [];
+		for (var key in connectedStations) {
+			this.connectedStations.push(stationsByID[key]);
+		}
 
-    // will have to build the journey backwards, from destination to source
-    this.buildJourney = function (pathNode) {
-      var lineData = this.lineData;
-      var journey = [];
-      var stage = {};
+		this.stations = stations;
 
-      while(pathNode.fromPathNode !== null) {
-        
-        stage.name = pathNode.station.name;
-        // stage.line and stage.direction will come
-        // from previous iterations of this loop
-        journey.push(stage);
+		// update network representation with any disruptions
+		this.update = function () {
+			// todo: implement
+		};
 
-        // this special case will be true for the destination station
-        // (which is first in the pathNode)
-        if(stage.connection === undefined) {
-          stage.connection = pathNode.connection;
-        }
+		// will have to build the journey backwards, from destination to source
+		this.buildJourney = function (pathNode) {
+			var lineData = this.lineData;
+			var journey = [];
+			var stage = {};
 
-        stage = {};
-        if(pathNode.connection) {
-          stage.connection = pathNode.connection;
-        }
-        pathNode = pathNode.fromPathNode;
-      } 
+			while (pathNode.fromPathNode !== null) {
 
-      stage.name = pathNode.station.name; // the start station
-      journey.push(stage);
+				stage.name = pathNode.station.name;
+				// stage.line and stage.direction will come
+				// from previous iterations of this loop
+				journey.push(stage);
 
-      return journey.reverse().map(function(n) {
-        n.lineData = lineData[n.connection.line];
-        return n;
-      });
-    }
+				// this special case will be true for the destination station
+				// (which is first in the pathNode)
+				if (stage.connection === undefined) {
+					stage.connection = pathNode.connection;
+				}
 
-    // from = name of from station
-    // to = name of to station
-    this.route = function (from, to) {
-      var fromLower = from.toLowerCase();
-      var toLower = to.toLowerCase();
-      var fromStation = this.stations[fromLower];
-      var toStation = this.stations[toLower];
+				stage = {};
+				if (pathNode.connection) {
+					stage.connection = pathNode.connection;
+				}
+				pathNode = pathNode.fromPathNode;
+			}
 
-      if(fromStation === undefined) {
-        return {
-          success: false,
-          message: "unknown starting station: " + from
-        };
-      }
+			stage.name = pathNode.station.name; // the start station
+			journey.push(stage);
 
-      if(toStation === undefined) {
-        return {
-          success: false,
-          message: "unknown destination station: " + to
-        };
-      }
+			return journey.reverse().map(function (n) {
+				n.lineData = lineData[n.connection.line];
+				return n;
+			});
+		};
 
-      var visited = {};         // stations already visited
-      var open = createPriorityQueue();
-      var g = 0;                    // cost from start
-      var h = travelTime(fromStation, toStation);
-      var currentPathNode, currentStation, connectingStation;
-      var bestPathNode = null;
+		// from = name of from station
+		// to = name of to station
+		this.route = function (from, to) {
+			var fromLower = from.toLowerCase();
+			var toLower = to.toLowerCase();
+			var fromStation = this.stations[fromLower];
+			var toStation = this.stations[toLower];
 
-      var switchingLinesPenalty = 1;
+			if (fromStation === undefined) {
+				return {
+					success: false,
+					message: "unknown starting station: " + from
+				};
+			}
 
-      open.push(new PathNode([fromStation], g, h, null));
+			if (toStation === undefined) {
+				return {
+					success: false,
+					message: "unknown destination station: " + to
+				};
+			}
 
-      while(open.length() > 0) {
-        currentPathNode = open.pop();   // the pathNode with the lowest f score
-        currentStation = currentPathNode.station;
-        if(currentStation.lowercaseName === toLower) {
-          // found a valid route, see if it's the best one
-          if(bestPathNode === null || currentPathNode.g < bestPathNode.g) {
-            bestPathNode = currentPathNode;
-          } 
-        }
+			var visited = {};         // stations already visited
+			var open = createPriorityQueue();
+			var g = 0;                    // cost from start
+			var h = travelTime(fromStation, toStation);
+			var currentPathNode, currentStation, connectingStation;
+			var bestPathNode = null;
 
-        // add current to visited set
-        visited[currentStation.name] = true;
+			var switchingLinesPenalty = 1;
 
-        // iterate through the connections
-        currentStation.connections.forEach(function(connection){
+			var checkConnection = function (connection) {
 
-          connectingStation = connection.dest;
+				connectingStation = connection.dest;
 
-          if(visited.hasOwnProperty(connectingStation.name)) {
-            // already visited this node
-          } else {
-            /*
-              check if the priority queue already has this connection added.
-              Will need to check: the station name
-                                  the line it's on
-                                  the line we've come from
-            */
-            if(!open.contains({connectingStation: connectingStation, 
-                               connection: connection, 
-                               prevConnection: prevConnection(currentPathNode)})) {
-              // add to open queue if not already in there
-              g = currentPathNode.g + travelTime(currentStation, 
-                                                 connectingStation);
-              h = travelTime(connectingStation, toStation);
+				if (visited.hasOwnProperty(connectingStation.name)) {
+					// already visited this node
+				} else {
+					/*
+					 check if the priority queue already has this connection added.
+					 Will need to check: the station name
+					 the line it's on
+					 the line we've come from
+					 */
+					if (!open.contains({connectingStation: connectingStation,
+						connection: connection,
+						prevConnection: prevConnection(currentPathNode)})) {
+						// add to open queue if not already in there
+						g = currentPathNode.g + travelTime(currentStation,
+							connectingStation);
+						h = travelTime(connectingStation, toStation);
 
-              if(switchingLines(currentPathNode, connection)) {
-                h += switchingLinesPenalty;
-              }
-              open.push(new PathNode([connectingStation, connection], 
-                                     g, 
-                                     h, 
-                                     currentPathNode));
-            }
-          }
-        });
-      }
+						if (switchingLines(currentPathNode, connection)) {
+							h += switchingLinesPenalty;
+						}
+						open.push(new PathNode([connectingStation, connection],
+							g,
+							h,
+							currentPathNode));
+					}
+				}
+			};
 
-      if(bestPathNode === null) {
-        return { 
-          success: false,
-          message: "unable to find path between " + from + " and " + to
-        };
-      } else {
-        return {
-          success: true,
-          path: this.buildJourney(bestPathNode)
-        };
+			open.push(new PathNode([fromStation], g, h, null));
 
-      }
-    };
+			while (open.length() > 0) {
+				currentPathNode = open.pop();   // the pathNode with the lowest f score
+				currentStation = currentPathNode.station;
+				if (currentStation.lowercaseName === toLower) {
+					// found a valid route, see if it's the best one
+					if (bestPathNode === null || currentPathNode.g < bestPathNode.g) {
+						bestPathNode = currentPathNode;
+					}
+				}
 
-    // only for testing purposes
-    this._travelTime = travelTime;
+				// add current to visited set
+				visited[currentStation.name] = true;
 
-  };
+				// iterate through the connections
+				currentStation.connections.forEach(checkConnection);
+			}
 
-  return Network;
+			if (bestPathNode === null) {
+				return {
+					success: false,
+					message: "unable to find path between " + from + " and " + to
+				};
+			} else {
+				return {
+					success: true,
+					path: this.buildJourney(bestPathNode)
+				};
+
+			}
+		};
+
+		// only for testing purposes
+		this._travelTime = travelTime;
+
+	};
+
+	return Network;
 
 
 });
