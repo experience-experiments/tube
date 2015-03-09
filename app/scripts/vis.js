@@ -1,4 +1,4 @@
-define(['vendor/d3.v2.min', 'tube'], function(d3, tube) {
+define(['d3', 'tube'], function(d3, tube) {
 
   var parentEl;
   var vis;
@@ -49,7 +49,7 @@ define(['vendor/d3.v2.min', 'tube'], function(d3, tube) {
       .attr("cy", 0)
       .attr("r", 0.1)
       .attr("fill", "white")
-      .attr("stroke-width", 5)      
+      .attr("stroke-width", 5)
     station.append("text")
       .attr("class", "station-name")
       .attr("dy", "0.4em")
@@ -58,7 +58,7 @@ define(['vendor/d3.v2.min', 'tube'], function(d3, tube) {
       .attr("class", "station-description-label")
       .attr("dy", "1.6em")
       .attr("dx", "3em");
-    
+
     // exit
     nodes.exit()
       .transition()
@@ -72,13 +72,13 @@ define(['vendor/d3.v2.min', 'tube'], function(d3, tube) {
       .attr("fill", function(s, i) {
         if(i<route.length-1) {
           return s.lineData.colour;
-        } else { 
+        } else {
           return "orange";
         }
       })
       .attr("width", connectionBarWidth)
       .transition().duration(900).delay(function(s,i){return (i*90) + 20;})
-      .attr("height", function(s, i) { 
+      .attr("height", function(s, i) {
         return (i===route.length-1) ? 0 : stationGap;
       })
       .attr("x", -connectionBarWidth/2);
