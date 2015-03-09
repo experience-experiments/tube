@@ -23,10 +23,13 @@ define(['tube', 'vis'], function (tube, vis) {
 			fromEl.value = 'Liverpool Street';
 
 			toEl.value = 'Camden Town';
+			toEl.focus();
 
 			submitEl.onclick = function () {
 				return getRoute(fromEl.value, toEl.value);
 			};
+
+
 
 			vis.init(sheet);
 

@@ -63,9 +63,6 @@ define(['d3', 'tube'], function (d3, tube) {
 
 		// exit
 		nodes.exit()
-			.transition()
-			.duration(900)
-			.style("fill-opacity", 1e-6)
 			.remove();
 
 		vis.selectAll(".station-connection")
