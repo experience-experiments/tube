@@ -1,189 +1,370 @@
-module.exports = function( grunt ) {
-  'use strict';
-  //
-  // Grunt configuration:
-  //
-  // https://github.com/cowboy/grunt/blob/master/docs/getting_started.md
-  //
+// Generated on 2015-03-06 using generator-chrome-extension 0.3.0
+'use strict';
+
+// # Globbing
+// for performance reasons we're only matching one level down:
+// 'test/spec/{,*/}*.js'
+// use this if you want to recursively match all subfolders:
+// 'test/spec/**/*.js'
+
+module.exports = function (grunt) {
+
+  // Load grunt tasks automatically
+  require('load-grunt-tasks')(grunt);
+
+  // Time how long tasks take. Can help when optimizing build times
+  require('time-grunt')(grunt);
+
+  // Configurable paths
+  var config = {
+    app: 'app',
+    dist: 'dist'
+  };
+
   grunt.initConfig({
 
-    // Project configuration
-    // ---------------------
+    // Project settings
+    config: config,
 
-    // specify an alternate install location for Bower
-    bower: {
-      dir: 'app/components'
-    },
-
-    // Coffee to JS compilation
-    coffee: {
-      compile: {
-        files: {
-          'temp/scripts/*.js': 'app/scripts/**/*.coffee' 
-        },
-        options: {
-          basePath: 'app/scripts'
-        }
-      }
-    },
-
-    // compile .scss/.sass to .css using Compass
-    compass: {
-      dist: {
-        // http://compass-style.org/help/tutorials/configuration-reference/#configuration-properties
-        options: {
-          css_dir: 'temp/styles',
-          sass_dir: 'app/styles',
-          images_dir: 'app/images',
-          javascripts_dir: 'temp/scripts',
-          force: true
-        }
-      }
-    },
-
-    // generate application cache manifest
-    manifest:{
-      dest: ''
-    },
-
-    // headless testing through PhantomJS
-    jasmine: {
-      all: ['test/**/*.html']
-    },
-
-    // default watch configuration
+    // Watches files for changes and runs tasks based on the changed files
     watch: {
-      coffee: {
-        files: 'app/scripts/**/*.coffee',
-        tasks: 'coffee reload'
+      bower: {
+        files: ['bower.json'],
+        tasks: ['bowerInstall']
+      },
+      js: {
+        files: ['<%= config.app %>/scripts/{,*/}*.js'],
+        tasks: ['jshint'],
+        options: {
+          livereload: '<%= connect.options.livereload %>'
+        }
       },
       compass: {
-        files: [
-          'app/styles/**/*.{scss,sass}'
-        ],
-        tasks: 'compass reload'
+        files: ['<%= config.app %>/styles/{,*/}*.{scss,sass}'],
+        tasks: ['compass:chrome']
       },
-      reload: {
+      gruntfile: {
+        files: ['Gruntfile.js']
+      },
+      styles: {
+        files: ['<%= config.app %>/styles/{,*/}*.css'],
+        tasks: [],
+        options: {
+          livereload: '<%= connect.options.livereload %>'
+        }
+      },
+      livereload: {
+        options: {
+          livereload: '<%= connect.options.livereload %>'
+        },
         files: [
-          'app/*.html',
-          'app/styles/**/*.css',
-          'app/scripts/**/*.js',
-          'app/images/**/*'
-        ],
-        tasks: 'reload'
+          '<%= config.app %>/*.html',
+          '<%= config.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
+          '<%= config.app %>/manifest.json',
+          '<%= config.app %>/_locales/{,*/}*.json'
+        ]
       }
     },
 
-    // default lint configuration, change this to match your setup:
-    // https://github.com/cowboy/grunt/blob/master/docs/task_lint.md#lint-built-in-task
-    lint: {
-      files: [
+    // Grunt server and debug server setting
+    connect: {
+      options: {
+        port: 9000,
+        livereload: 35729,
+        // change this to '0.0.0.0' to access the server from outside
+        hostname: 'localhost'
+      },
+      chrome: {
+        options: {
+          open: false,
+          base: [
+            '<%= config.app %>'
+          ]
+        }
+      },
+      test: {
+        options: {
+          open: false,
+          base: [
+            'test',
+            '<%= config.app %>'
+          ]
+        }
+      }
+    },
+
+    // Empties folders to start fresh
+    clean: {
+      chrome: {
+      },
+      dist: {
+        files: [{
+          dot: true,
+          src: [
+            '<%= config.dist %>/*',
+            '!<%= config.dist %>/.git*'
+          ]
+        }]
+      }
+    },
+
+    // Make sure code styles are up to par and there are no obvious mistakes
+    jshint: {
+      options: {
+        jshintrc: '.jshintrc',
+        reporter: require('jshint-stylish')
+      },
+      all: [
         'Gruntfile.js',
-        'app/scripts/**/*.js',
-        'spec/**/*.js'
+        '<%= config.app %>/scripts/{,*/}*.js',
+        '!<%= config.app %>/scripts/vendor/*',
+        'test/spec/{,*/}*.js'
+      ]
+    },
+    mocha: {
+      all: {
+        options: {
+          run: true,
+          urls: ['http://localhost:<%= connect.options.port %>/index.html']
+        }
+      }
+    },
+
+     // Compiles Sass to CSS and generates necessary files if requested
+    compass: {
+      options: {
+        sassDir: '<%= config.app %>/styles',
+        cssDir: '<%= config.dist %>/styles',
+        generatedImagesDir: '<%= config.dist %>/images/generated',
+        imagesDir: '<%= config.app %>/images',
+        javascriptsDir: '<%= config.app %>/scripts',
+        fontsDir: '<%= config.app %>/styles/fonts',
+        importPath: '<%= config.app %>/bower_components',
+        httpImagesPath: '/images',
+        httpGeneratedImagesPath: '/images/generated',
+        httpFontsPath: '/styles/fonts',
+        relativeAssets: false,
+        assetCacheBuster: false
+      },
+      chrome: {
+        options: {
+          cssDir: '<%= config.app %>/styles',
+          generatedImagesDir: '<%= config.app %>/images/generated',
+          debugInfo: true
+        }
+      },
+      dist: {
+      },
+      test: {
+      }
+    },
+
+    // Automatically inject Bower components into the HTML file
+    bowerInstall: {
+      app: {
+        src: [
+          '<%= config.app %>/*.html'
+        ]
+      },
+      sass: {
+        src: ['<%= config.app %>/styles/{,*/}*.{scss,sass}'],
+        ignorePath: '<%= config.app %>/bower_components/'
+      }
+    },
+
+    // Reads HTML for usemin blocks to enable smart builds that automatically
+    // concat, minify and revision files. Creates configurations in memory so
+    // additional tasks can operate on them
+    useminPrepare: {
+      options: {
+        dest: '<%= config.dist %>'
+      },
+      html: [
+        '<%= config.app %>/index.html',
+        '<%= config.app %>/options.html'
       ]
     },
 
-    // specifying JSHint options and globals
-    // https://github.com/cowboy/grunt/blob/master/docs/task_lint.md#specifying-jshint-options-and-globals
-    jshint: {
+    // Performs rewrites based on rev and the useminPrepare configuration
+    usemin: {
       options: {
-        curly: true,
-        eqeqeq: true,
-        immed: true,
-        latedef: true,
-        newcap: true,
-        noarg: true,
-        sub: true,
-        undef: true,
-        boss: true,
-        eqnull: true,
-        browser: true
+        assetsDirs: ['<%= config.dist %>', '<%= config.dist %>/images']
       },
-      globals: {
-        jQuery: true
+      html: ['<%= config.dist %>/{,*/}*.html'],
+      css: ['<%= config.dist %>/styles/{,*/}*.css']
+    },
+
+    // The following *-min tasks produce minifies files in the dist folder
+    imagemin: {
+      dist: {
+        files: [{
+          expand: true,
+          cwd: '<%= config.app %>/images',
+          src: '{,*/}*.{gif,jpeg,jpg,png}',
+          dest: '<%= config.dist %>/images'
+        }]
       }
     },
 
-    // Build configuration
-    // -------------------
-
-    // the staging directory used during the process
-    staging: 'temp',
-    // final build output
-    output: 'dist',
-
-    mkdirs: {
-      staging: 'app/'
+    svgmin: {
+      dist: {
+        files: [{
+          expand: true,
+          cwd: '<%= config.app %>/images',
+          src: '{,*/}*.svg',
+          dest: '<%= config.dist %>/images'
+        }]
+      }
     },
 
-    // Below, all paths are relative to the staging directory, which is a copy
-    // of the app/ directory. Any .gitignore, .ignore and .buildignore file
-    // that might appear in the app/ tree are used to ignore these values
-    // during the copy process.
-
-    // concat css/**/*.css files, inline @import, output a single minified css
-    css: {
-      'styles/main.css': ['styles/**/*.css']
+    htmlmin: {
+      dist: {
+        options: {
+          // removeCommentsFromCDATA: true,
+          // collapseWhitespace: true,
+          // collapseBooleanAttributes: true,
+          // removeAttributeQuotes: true,
+          // removeRedundantAttributes: true,
+          // useShortDoctype: true,
+          // removeEmptyAttributes: true,
+          // removeOptionalTags: true
+        },
+        files: [{
+          expand: true,
+          cwd: '<%= config.app %>',
+          src: '*.html',
+          dest: '<%= config.dist %>'
+        }]
+      }
     },
 
-    // renames JS/CSS to prepend a hash of their contents for easier
-    // versioning
-    rev: {
-      js: 'scripts/**/*.js',
-      css: 'styles/**/*.css',
-      img: 'images/**'
+    // By default, your `index.html`'s <!-- Usemin block --> will take care of
+    // minification. These next options are pre-configured if you do not wish
+    // to use the Usemin blocks.
+    // cssmin: {
+    //   dist: {
+    //     files: {
+    //       '<%= config.dist %>/styles/main.css': [
+    //         '<%= config.app %>/styles/{,*/}*.css'
+    //       ]
+    //     }
+    //   }
+    // },
+    // uglify: {
+    //   dist: {
+    //     files: {
+    //       '<%= config.dist %>/scripts/scripts.js': [
+    //         '<%= config.dist %>/scripts/scripts.js'
+    //       ]
+    //     }
+    //   }
+    // },
+    // concat: {
+    //   dist: {}
+    // },
+
+    // Copies remaining files to places other tasks can use
+    copy: {
+      dist: {
+        files: [{
+          expand: true,
+          dot: true,
+          cwd: '<%= config.app %>',
+          dest: '<%= config.dist %>',
+          src: [
+            '*.{ico,png,txt}',
+            'images/{,*/}*.{webp,gif}',
+            '{,*/}*.html',
+            'styles/{,*/}*.css',
+            'styles/fonts/{,*/}*.*',
+            '_locales/{,*/}*.json',
+          ]
+        }]
+      }
     },
 
-    // usemin handler should point to the file containing
-    // the usemin blocks to be parsed
-    'usemin-handler': {
-      html: 'index.html'
+    // Run some tasks in parallel to speed up build process
+    concurrent: {
+      chrome: [
+        'compass:chrome',
+      ],
+      dist: [
+        'compass:dist',
+        'imagemin',
+        'svgmin'
+      ],
+      test: [
+        'compass:test',
+      ]
     },
 
-    // update references in HTML/CSS to revved files
-    usemin: {
-      html: ['**/*.html'],
-      css: ['**/*.css']
+    // Auto buildnumber, exclude debug files. smart builds that event pages
+    chromeManifest: {
+      dist: {
+        options: {
+          buildnumber: true,
+          indentSize: 2,
+          background: {
+            target: 'scripts/background.js',
+            exclude: [
+              'scripts/chromereload.js'
+            ]
+          }
+        },
+        src: '<%= config.app %>',
+        dest: '<%= config.dist %>'
+      }
     },
 
-    // HTML minification
-    html: {
-      files: ['**/*.html']
-    },
-
-    // Optimizes JPGs and PNGs (with jpegtran & optipng)
-    img: {
-      dist: '<config:rev.img>'
-    },
-
-    // rjs configuration. You don't necessarily need to specify the typical
-    // `path` configuration, the rjs task will parse these values from your
-    // main module, using http://requirejs.org/docs/optimization.html#mainConfigFile
-    //
-    // name / out / mainConfig file should be used. You can let it blank if
-    // you're using usemin-handler to parse rjs config from markup (default
-    // setup)
-    rjs: {
-      // no minification, is done by the min task
-      optimize: 'none',
-      baseUrl: './scripts',
-      wrap: true,
-      name: 'main'
-    },
-
-    // While Yeoman handles concat/min when using
-    // usemin blocks, you can still use them manually
-    concat: {
-      dist: ''
-    },
-
-    min: {
-      dist: ''
+    // Compres dist files to package
+    compress: {
+      dist: {
+        options: {
+          archive: function() {
+            var manifest = grunt.file.readJSON('app/manifest.json');
+            return 'package/Simple tube journey planner-' + manifest.version + '.zip';
+          }
+        },
+        files: [{
+          expand: true,
+          cwd: 'dist/',
+          src: ['**'],
+          dest: ''
+        }]
+      }
     }
   });
 
-  // Alias the `test` task to run the `mocha` task instead
-  grunt.registerTask('test', 'server:phantom jasmine');
+  grunt.registerTask('debug', function () {
+    grunt.task.run([
+      'jshint',
+      'concurrent:chrome',
+      'connect:chrome',
+      'watch'
+    ]);
+  });
 
+  grunt.registerTask('test', [
+    'connect:test',
+    'mocha'
+  ]);
+
+  grunt.registerTask('build', [
+    'clean:dist',
+    'chromeManifest:dist',
+    'useminPrepare',
+    'concurrent:dist',
+    'cssmin',
+    'concat',
+    'uglify',
+    'copy',
+    'usemin',
+    'compress'
+  ]);
+
+  grunt.registerTask('default', [
+    'jshint',
+    'test',
+    'build'
+  ]);
 };
