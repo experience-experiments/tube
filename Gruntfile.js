@@ -76,7 +76,7 @@ module.exports = function (grunt) {
       },
       chrome: {
         options: {
-          open: false,
+          open: true,
           base: [
             '<%= config.app %>'
           ]

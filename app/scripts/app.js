@@ -4,7 +4,6 @@ define(['tube', 'vis'], function(tube, vis) {
 	var fromEl = document.querySelector('#startStation');
 	var toEl = document.querySelector('#destStation');
 	var submitEl = document.querySelector('#showRoute');
-	var stationNames = tube.stationNames();
 
 	function getRoute(from, to) {
 		var r = tube.route(from, to);
