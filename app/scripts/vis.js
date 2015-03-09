@@ -68,7 +68,6 @@ define(['d3', 'tube'], function(d3, tube) {
 
     vis.selectAll(".station-connection")
       .data(route)
-      .transition().duration(900).delay(function(s,i){return (i*90) + 20;})
       .attr("fill", function(s, i) {
         if(i<route.length-1) {
           return s.lineData.colour;
@@ -77,7 +76,6 @@ define(['d3', 'tube'], function(d3, tube) {
         }
       })
       .attr("width", connectionBarWidth)
-      .transition().duration(900).delay(function(s,i){return (i*90) + 20;})
       .attr("height", function(s, i) {
         return (i===route.length-1) ? 0 : stationGap;
       })
@@ -86,21 +84,14 @@ define(['d3', 'tube'], function(d3, tube) {
     vis.selectAll(".station-stop")
       .data(route)
       .attr("stroke", function(s) { return s.lineData.colour})
-      .transition().duration(500).delay(function(s,i){return (i*90) + 20;})
       .attr("r", 10);
 
     vis.selectAll(".station-name")
       .data(route)
-      .transition().duration(500).delay(function(s,i){
-        return (i*90) + 400;
-      })
       .text(function(s) { return s.name; });
 
     vis.selectAll(".station-description-label")
       .data(route)
-      .transition().duration(500).delay(function(s,i) {
-        return (i*90) + 450;
-      })
       .text(function(s, i) {
         return tube.routeDescription(i, route);
       });
