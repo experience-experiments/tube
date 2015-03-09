@@ -9,3 +9,7 @@ package
 .DS_Store
 
 app/styles/main.css
+
+*.crx
+
+*.pem

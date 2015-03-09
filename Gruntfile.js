@@ -272,12 +272,14 @@ module.exports = function (grunt) {
           cwd: '<%= config.app %>',
           dest: '<%= config.dist %>',
           src: [
+	          'bower_components/{,*/}*.js',
+	          'scripts/{,*/}*.js',
             '*.{ico,png,txt}',
             'images/{,*/}*.{webp,gif}',
             '{,*/}*.html',
             'styles/{,*/}*.css',
             'styles/fonts/{,*/}*.*',
-            '_locales/{,*/}*.json',
+            '_locales/{,*/}*.json'
           ]
         }]
       }
