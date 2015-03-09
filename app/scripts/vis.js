@@ -1,6 +1,6 @@
 define(['vendor/d3.v2.min', 'tube'], function(d3, tube) {
 
-  var parentElement;
+  var parentEl;
   var vis;
 
   // the height of each station list element
@@ -13,12 +13,13 @@ define(['vendor/d3.v2.min', 'tube'], function(d3, tube) {
   var showFn;
 
   function resizeSVG(route) {
-    var height = (stationGap * route.length) + 20;
-    var svg = $("svg");
+	  var height = (stationGap * route.length) + 20;
+	  var svg = document.querySelector("svg");
 
-    parentElement.css("height", height);
-    svg.css("height", height);
-    svg.css("width", 560);
+	  parentEl.style.height = height + 'px';
+
+	  svg.style.height = height + 'px';
+	  svg.style.width = '600px';
   }
 
 
@@ -140,26 +141,12 @@ define(['vendor/d3.v2.min', 'tube'], function(d3, tube) {
   }
 
   return {
-    init: function(parent) {
+	  init: function(parent) {
+		  parentEl = parent;
+		  parentEl.innerHTML = '';
+		  vis = d3.select(parentEl).append("svg").append("g");
+	  },
 
-      // render the route with SVG if the browser supports it
-      // otherwise create a table
-
-      parentElement = $(parent);
-      parentElement.empty();
-
-      if(Modernizr.svg) {
-        vis = d3.select(parent).append("svg").append("g");
-        showFn = showWithSVG;
-      } else {
-        vis = d3.select(parent).append("div").append("table")
-          .attr("class", "table table-bordered");
-        showFn = showWithTable;
-      }
-    },
-
-    showRoute: function(route) {
-      return showFn(route);
-    }
+	  showRoute: showWithSVG
   }
 });

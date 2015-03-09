@@ -1,35 +1,34 @@
 define(['tube', 'vis'], function(tube, vis) {
 
-  function getRoute(from, to) {
-    var r = tube.route(from, to);
-    if(r.success === true) {
-      vis.showRoute(r.path);
-    } else {
-      // display error message
-      console.log(r.message);
-    }
-    return false;
-  }
+	var sheet = document.querySelector('#sheet');
+	var fromEl = document.querySelector('#startStation');
+	var toEl = document.querySelector('#destStation');
+	var submitEl = document.querySelector('#showRoute');
+	var stationNames = tube.stationNames();
 
-  return {
-    init: function() {
-      vis.init("#sheet");
+	function getRoute(from, to) {
+		var r = tube.route(from, to);
+		if(r.success === true) {
+			vis.showRoute(r.path);
+		} else {
+			sheet.innerHTML = r.message;
+		}
+		return false;
+	}
 
-      var stationNames = tube.stationNames();
+	return {
+		init: function() {
 
-      var fromUI = $("#startStation");
-      fromUI.typeahead({ source: stationNames });
-      fromUI.val("Marble Arch");
+			fromEl.value = 'Liverpool Street';
 
-      var toUI = $("#destStation");
-      toUI.typeahead({ source: stationNames });
-      toUI.val("Aldgate");
+			toEl.value = 'Camden Town';
 
-      $("#tube-form").submit(function() {
-        getRoute(fromUI.val(), toUI.val());
-        return false;
-      });
-//      getRoute(fromUI.val(), toUI.val());
-    }
-  };
+			submitEl.onclick = function(){
+				return getRoute(fromEl.value, toEl.value);
+			};
+
+			vis.init(sheet);
+
+		}
+	};
 });
