@@ -14,27 +14,32 @@
     <header>Plan your Tube Journey</header>
     <form class="planner-form">
         <div class="row">
-            <svg height="60" width="60"><circle class="input-station" cx="12.5" cy="12.5" r="10" stroke="black" stroke-width="5" fill="white" /></svg>
-            <label for="startStation">From</label>
-            <input type="text" id="startStation"/>
-            <a href="">CHANGE</a>
+            <svg>
+                <circle class="input-station" cx="30" cy="30" r="15" stroke="black" stroke-width="6" fill="white" />
+            </svg>
+            <label for="from-station">From</label><br/>
+            <input type="text" id="from-station"/>
+            <a href="" id="change-from" class="pure-button">CHANGE</a>
         </div>
         <div class="row">
-            <svg height="60" width="60"><circle class="input-station" cx="12.5" cy="12.5" r="10" stroke="black" stroke-width="5" fill="white" /></svg>
-            <label for="destStation">To</label>
-            <input type="text" id="destStation" placeholder="Enter station here"/>
+            <svg>
+                <circle class="input-station" cx="30" cy="30" r="15" stroke="black" stroke-width="6" fill="white" />
+            </svg>
+
+            <label for="to-station">To</label><br/>
+            <input type="text" id="to-station" class="typeahead pure-input-rounded" placeholder="Enter station here"/>
+            <a href="" id="go" class="pure-button">GO</a>
         </div>
     </form>
     <br/>
-
-    <div id="sheet"></div>
+    <a href="" id="change-journey" class="pure-button">CHANGE</a>
+    <div id="route-display"></div>
 
     <!-- build:js scripts/all.js -->
-      <script src="bower_components/requirejs/require.js"></script>
-      <script src="scripts/config.js"></script>
-      <script src="scripts/main.js"></script>
+    <script src="bower_components/requirejs/require.js"></script>
+    <script src="scripts/config.js"></script>
+    <script src="scripts/main.js"></script>
     <!-- endbuild --> 
-
 
 </body>
 </html>

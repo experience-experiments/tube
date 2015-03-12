@@ -34,7 +34,7 @@ define(['network', 'stations', 'connections'], function (Network, stations, conn
 	return {
 		stationNames: function () {
 			var names = network.connectedStations.map(function (station) {
-				return station.name;
+				return {value:station.name};
 			});
 			return names;
 		},

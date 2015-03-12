@@ -12,15 +12,15 @@ define(['d3', 'tube'], function (d3, tube) {
 	var longestRouteLength = 0;
 
 
-	function resizeSVG(route) {
+	var resizeSVG = function(route) {
 		var height = (stationGap * route.length) + 20;
-		var svg = document.querySelector("#sheet svg");
+		var svg = parentEl.querySelector("svg");
 
 		parentEl.style.height = height + 'px';
 
 		svg.style.height = height + 'px';
-		svg.style.width = '600px';
-	}
+		svg.style.width = '100%';
+	};
 
 
 	function showWithSVG(route) {
