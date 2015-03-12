@@ -14,7 +14,7 @@ define(['d3', 'tube'], function (d3, tube) {
 
 	function resizeSVG(route) {
 		var height = (stationGap * route.length) + 20;
-		var svg = document.querySelector("svg");
+		var svg = document.querySelector("#sheet svg");
 
 		parentEl.style.height = height + 'px';
 

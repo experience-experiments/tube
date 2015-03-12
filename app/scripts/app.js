@@ -25,11 +25,9 @@ define(['tube', 'vis'], function (tube, vis) {
 			toEl.value = 'Camden Town';
 			toEl.focus();
 
-			submitEl.onclick = function () {
+			toEl.onblur = function () {
 				return getRoute(fromEl.value, toEl.value);
 			};
-
-
 
 			vis.init(sheet);
 

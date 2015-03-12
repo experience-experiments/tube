@@ -6,22 +6,35 @@
         <meta name="description" content="Simple tube journey planner"/>
         <meta name="viewport" content="width=device-width"/>
         <!-- build:css styles/main.css -->
-        <link href="styles/main.css" rel="stylesheet">
+        <link rel="stylesheet" href="styles/main.css">
         <!-- endbuild -->
     </head>
     <body>
 
-    <form class="nl-form">
-        I would like to go
-        <label for="startStation">from </label><input type="text" id="startStation"/>
-        <label for="destStation">to </label><input type="text" id="destStation"/>.
-        <input type="submit" id="showRoute" value="Take Me"/>
+    <header>Plan your Tube Journey</header>
+    <form class="planner-form">
+        <div class="row">
+            <svg height="60" width="60"><circle class="input-station" cx="12.5" cy="12.5" r="10" stroke="black" stroke-width="5" fill="white" /></svg>
+            <label for="startStation">From</label>
+            <input type="text" id="startStation"/>
+            <a href="">CHANGE</a>
+        </div>
+        <div class="row">
+            <svg height="60" width="60"><circle class="input-station" cx="12.5" cy="12.5" r="10" stroke="black" stroke-width="5" fill="white" /></svg>
+            <label for="destStation">To</label>
+            <input type="text" id="destStation" placeholder="Enter station here"/>
+        </div>
     </form>
     <br/>
 
     <div id="sheet"></div>
 
-    <script data-main="scripts/main" src="bower_components/requirejs/require.js"></script>
+    <!-- build:js scripts/all.js -->
+      <script src="bower_components/requirejs/require.js"></script>
+      <script src="scripts/config.js"></script>
+      <script src="scripts/main.js"></script>
+    <!-- endbuild --> 
+
 
 </body>
 </html>

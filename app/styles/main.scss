@@ -1,10 +1,65 @@
 $padding: 20px;
+$labelColor: #8a8a8a;
 
 *{
   font-family: arial 'sans-serif';
 }
 
 body {
-  width: 640px;
-  padding: $padding;
+  max-width: 640px;
+  padding: 0px;
+  margin: 0px;
+}
+
+header {
+  background-color: #000000;
+  color: #ffffff;
+  line-height: 48px;
+  padding-left: 10px;
+  font-weight: bold;
+}
+
+.planner-form {
+
+  padding-left: $padding;
+  padding-top: $padding;
+
+  .row{
+    position: relative;
+
+    svg {
+
+    }
+
+    label {
+      color: $labelColor;
+      position: absolute;
+      left: 70px;
+      top: 5px;
+      line-height: 22px;
+    }
+
+    a {
+      position: absolute;
+      left: 250px;
+      top: 30px;
+      text-decoration: none;
+      color: $labelColor;
+    }
+
+    input {
+      position: absolute;
+      left: 70px;
+      top: 30px;
+      line-height: 22px;
+      width: 150px;
+      border: none;
+
+      &:focus {
+        border: 1px;
+      }
+    }
+  }
+
+
 }
