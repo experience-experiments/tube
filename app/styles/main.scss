@@ -64,15 +64,41 @@ header {
 
 #route-display {
   padding-left: $padding;
-}
 
-#change-journey {
-  margin-left: $padding;
-  text-decoration: none;
-  font-size: small;
-  color: $labelColor;
-}
+  g.station text{
+    font-size: 0.9em;
+  }
 
+  g.station circle.station-stop{
+    stroke: #000000;
+    fill: white;
+    stroke-width: 4;
+  }
+
+  g.station[data-type="middle"] text{
+    fill: #afafaf;
+  }
+
+
+  g.station[data-type="boundary"] text{
+
+  }
+
+  g.station[data-type="change"] text{
+
+  }
+
+  .change-icon{
+    fill: #afafaf;
+    font-size: 1.1em !important;
+  }
+
+  .cancel-link{
+    fill: #000000;
+    font-size: 2em !important;
+    cursor: pointer;
+  }
+}
 
 .typeahead,
 .tt-query,
@@ -83,8 +109,13 @@ header {
   font-size: 14px;
   line-height: 18px;
   border: none;
-
   outline: none;
+}
+
+#to-station{
+  height: 30px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #000000;
 }
 
 .typeahead {
@@ -130,3 +161,6 @@ header {
     margin: 0;
   }
 }
+
+
+

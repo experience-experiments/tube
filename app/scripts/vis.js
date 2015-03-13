@@ -6,30 +6,38 @@ define(['d3', 'tube'], function (d3, tube) {
 	var vis;
 
 	// the height of each station list element
-	var stationGap = 80;
+	var stationGap = 50;
 
 	var connectionBarWidth = 5;
-	var longestRouteLength = 0;
 
+	var stationTypes = {
+		start:1,
+		middle:2,
+		change:3,
+		finish:4
+	}
 
-	var resizeSVG = function(route) {
-		var height = (stationGap * route.length) + 20;
-		var svg = parentEl.querySelector("svg");
-
-		parentEl.style.height = height + 'px';
-
-		svg.style.height = height + 'px';
-		svg.style.width = '100%';
-	};
-
+	function stationType(route, i){
+		if (i === 0) {
+			return stationTypes.start;
+		}
+		if (i === (route.length - 1)){
+			return stationTypes.finish;
+		}
+		var prev = route[i - 1];
+		var current = route[i];
+		if (prev.connection.line !== current.connection.line || prev.connection.direction !== current.connection.direction) {
+			return stationTypes.change;
+		}
+		return stationTypes.middle;
+	}
 
 	function showWithSVG(route) {
-		// resize svg element to fit entire route
 
-		if (route.length > longestRouteLength) {
-			longestRouteLength = route.length;
-			resizeSVG(route);
-		}
+		d3.select(parentEl).select("svg").remove();
+
+		var height = (stationGap * route.length) + 20;
+		vis = d3.select(parentEl).append("svg").style("height", height + 'px');
 
 		// data join
 		var nodes = vis.selectAll(".station").data(route);
@@ -39,8 +47,7 @@ define(['d3', 'tube'], function (d3, tube) {
 			.append("g")
 			.attr("class", "station")
 			.attr("transform", function (d, i) {
-				var height = (i * stationGap) + 20;
-				return "translate(" + 30 + "," + height + ")";
+				return "translate(" + 30 + "," + ((i * stationGap) + 20) + ")";
 			});
 
 		station.append("rect")
@@ -49,21 +56,43 @@ define(['d3', 'tube'], function (d3, tube) {
 			.attr("class", "station-stop")
 			.attr("cx", 0)
 			.attr("cy", 0)
-			.attr("r", 0.1)
-			.attr("fill", "white")
-			.attr("stroke-width", 5);
+			.attr("r", 0.1);
 		station.append("text")
 			.attr("class", "station-name")
 			.attr("dy", "0.4em")
 			.attr("dx", "3em");
 		station.append("text")
 			.attr("class", "station-description-label")
-			.attr("dy", "1.6em")
+			.attr("dy", "1.7em")
 			.attr("dx", "3em");
+		station.filter(function(d, i) {
+				return stationType(route, i) === stationTypes.change;
+			})
+			.append('text')
+			.text("✰").
+			attr("dx","22").attr("dy","5").attr("class","change-icon");
+		station.filter(function(d, i) {
+				return stationType(route, i) === stationTypes.finish;
+			})
+			.append('a').attr("class","cancel-link")
+			.append('text').text("⊗").attr("dx","200").attr("dy","10");
 
-		// exit
-		nodes.exit()
-			.remove();
+
+
+		vis.selectAll(".station")
+			.data(route)
+			.attr("data-type", function(s,i){
+				switch(stationType(route, i)){
+					case stationTypes.start:
+						return 'start';
+					case stationTypes.finish:
+						return 'finish';
+					case stationTypes.change:
+						return 'change';
+					default:
+						return 'middle';
+				}
+			});
 
 		vis.selectAll(".station-connection")
 			.data(route)
@@ -82,10 +111,17 @@ define(['d3', 'tube'], function (d3, tube) {
 
 		vis.selectAll(".station-stop")
 			.data(route)
-			.attr("stroke", function (s) {
-				return '#000000';
-			})
-			.attr("r", 10);
+			.attr("r", function(s, i){
+				switch(stationType(route, i)){
+					case stationTypes.start:
+					case stationTypes.finish:
+						return 15;
+					case stationTypes.change:
+						return 13;
+					default:
+						return 10;
+				}
+			});
 
 		vis.selectAll(".station-name")
 			.data(route)
@@ -98,13 +134,18 @@ define(['d3', 'tube'], function (d3, tube) {
 			.text(function (s, i) {
 				return tube.routeDescription(i, route);
 			});
+
+		var dy = vis.select('.station[data-type="finish"] .station-name').node().getBBox().width + 60;
+		vis.selectAll('.station[data-type="finish"] a text').attr("dx",dy);
+
+
 	}
 
 	return {
 		init: function (parent) {
 			parentEl = parent;
 			parentEl.innerHTML = '';
-			vis = d3.select(parentEl).append("svg").append("g");
+			vis = d3.select(parentEl).append("svg");
 		},
 
 		showRoute: showWithSVG

@@ -9,7 +9,7 @@ define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
 
 	var changeFromBtn = document.querySelector('#change-from');
 	var goBtn = document.querySelector('#go');
-	var changeJourneyBtn = document.querySelector('#change-journey');
+
 
 	var stationMatcher = function(stationNames){
 		return function findMatches(query, callback){
@@ -21,26 +21,38 @@ define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
 	};
 
 	function getRoute(from, to) {
-		var route = tube.route(from, to);
-		if (route.success === true) {
-			$(plannerForm).hide();
-			$(routeDisplay).show();
-			$(changeJourneyBtn).show();
-			vis.showRoute(route.path);
-		} else {
-			$(routeDisplay).show();
-			routeDisplay.innerHTML = route.message;
+		try{
+			var route = tube.route(from, to);
+			if (route.success === true) {
+				$(plannerForm).hide();
+				$(routeDisplay).show();
+
+				vis.showRoute(route.path);
+				document.querySelector('.cancel-link').onclick = function () {
+					$(routeDisplay).hide();
+					$(plannerForm).show();
+					toEl.value = '';
+					toEl.focus();
+					return false;
+				};
+				return false;
+			} else {
+				$(routeDisplay).show();
+				routeDisplay.innerHTML = route.message;
+				return false;
+			}
+		} catch(e){
+			console.log(e);
+		}finally {
+			return false;
 		}
-		return false;
+
 	}
 
 	return {
 		init: function () {
 
-			$(changeJourneyBtn).hide();
-
 			fromEl.value = 'Liverpool Street';
-
 
 			vis.init(routeDisplay);
 
@@ -64,14 +76,6 @@ define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
 				return false;
 			};
 
-			changeJourneyBtn.onclick = function () {
-				$(routeDisplay).hide();
-				$(changeJourneyBtn).hide();
-				$(plannerForm).show();
-				toEl.value = '';
-				toEl.focus();
-				return false;
-			};
 		}
 	};
 });

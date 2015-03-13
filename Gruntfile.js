@@ -323,14 +323,11 @@ module.exports = function (grunt) {
 					verbose: true,
 					timestamp: true,
 					hash: true,
-					master: ['index.html'],
-					process: function (path) {
-						return path.substring('build/'.length);
-					}
+					master: ['dist/index.html']
 				},
-				src: [
-					"scripts/*.js",
-					"styles/*.css"
+				src:[
+					'scripts/*',
+					'styles/*'
 				],
 				dest: '<%= config.dist %>/tube.appcache'
 			}
@@ -385,7 +382,7 @@ module.exports = function (grunt) {
 		'usemin',
 		'htmlmin',
 		'requirejs:dist',
-		'uglify:dist',
+		//'uglify:dist',
 		'manifest:generate'
 	]);
 
