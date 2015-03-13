@@ -14,7 +14,7 @@ define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
 	var stationMatcher = function(stationNames){
 		return function findMatches(query, callback){
 			var matches = stationNames.filter(function(item){
-				return item.value.toLowerCase().indexOf(query.toLowerCase()) > -1;
+				return item.value.toLowerCase().indexOf(query.toLowerCase()) === 0;
 			});
 			callback(matches);
 		};
@@ -41,18 +41,18 @@ define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
 
 			fromEl.value = 'Liverpool Street';
 
-			toEl.focus();
 
 			vis.init(routeDisplay);
 
 			var stationNames = tube.stationNames();
 
-			$(toEl).typeahead({
+			$('.typeahead').typeahead({
 				hint: true,
 				minLength: 2,
 				highlight: true
 			},{name: 'stations', displayKey:'value', source:stationMatcher(stationNames)});
 
+			toEl.focus();
 
 			goBtn.onclick = function () {
 				return getRoute(fromEl.value, toEl.value);

@@ -83,7 +83,7 @@ define(['d3', 'tube'], function (d3, tube) {
 		vis.selectAll(".station-stop")
 			.data(route)
 			.attr("stroke", function (s) {
-				return s.lineData.colour;
+				return '#000000';
 			})
 			.attr("r", 10);
 

@@ -18,9 +18,6 @@ define(['network', 'stations', 'connections'], function (Network, stations, conn
 		if (index === 0) {
 			return notability.first;
 		}
-		if (index === route.length - 1) {
-			return notability.last;
-		}
 		var prev = route[index - 1];
 		if (prev.connection.line !== station.connection.line) {
 			return notability.changeLine;
@@ -59,14 +56,11 @@ define(['network', 'stations', 'connections'], function (Network, stations, conn
 				case notability.first:
 					return station.connection.line + " line";
 
-				case notability.last:
-					return "Reached destination";
-
 				case notability.changeLine:
-					return "Change to " + station.connection.line + " line " + station.connection.direction;
+					return station.connection.line + " line " + station.connection.direction;
 
 				case notability.changeDirection:
-					return "Hop on to " + station.connection.direction;
+					return "Change to " + station.connection.direction;
 
 				default:
 					return "";
