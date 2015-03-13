@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html manifest="tube.appcache">
     <head>
         <meta charset="utf-8"/>
         <title>Tube Journey Planner</title>
@@ -18,7 +18,7 @@
                 <circle class="input-station" cx="30" cy="30" r="15" stroke="black" stroke-width="6" fill="white" />
             </svg>
             <label for="from-station">From</label><br/>
-            <input type="text" id="from-station"/>
+            <input type="text" id="from-station" class="typeahead"/>
             <a href="" id="change-from" class="pure-button">CHANGE</a>
         </div>
         <div class="row">
@@ -27,14 +27,14 @@
             </svg>
 
             <label for="to-station">To</label><br/>
-            <input type="text" id="to-station" class="typeahead pure-input-rounded" placeholder="Enter station here"/>
+            <input type="text" id="to-station" class="typeahead" placeholder="Enter station here"/>
             <a href="" id="go" class="pure-button">GO</a>
         </div>
     </form>
     <br/>
-    <a href="" id="change-journey" class="pure-button">CHANGE</a>
-    <div id="route-display"></div>
 
+    <div id="route-display"></div>
+    <a href="" id="change-journey" class="pure-button">CHANGE</a>
     <!-- build:js scripts/all.js -->
     <script src="bower_components/requirejs/require.js"></script>
     <script src="scripts/config.js"></script>

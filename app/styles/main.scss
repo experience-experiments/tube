@@ -44,6 +44,7 @@ header {
     label {
       color: $labelColor;
       margin-left: 10px;
+      font-size: small;
     }
 
     a {
@@ -70,4 +71,62 @@ header {
   text-decoration: none;
   font-size: small;
   color: $labelColor;
+}
+
+
+.typeahead,
+.tt-query,
+.tt-hint {
+  min-width: 200px;
+  height: 22px;
+  padding: 2px 3px;
+  font-size: 14px;
+  line-height: 18px;
+  border: none;
+
+  outline: none;
+}
+
+.typeahead {
+  background-color: #fff;
+
+  &:focus {
+    height: 30px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #000000;
+  }
+}
+
+.tt-query {
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.tt-hint {
+  color: #999
+}
+
+.tt-dropdown-menu {
+  width: 200px;
+  margin-top: 6px;
+  padding: 2px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+
+.tt-suggestion {
+  padding: 3px 10px;
+  font-size: 14px;
+  line-height: 18px;
+
+  &.tt-cursor {
+    color: #fff;
+    background-color: #0097cf;
+  }
+
+  p {
+    margin: 0;
+  }
 }
