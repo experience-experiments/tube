@@ -38,7 +38,7 @@ define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
 				return false;
 			} else {
 				$(routeDisplay).show();
-				routeDisplay.innerHTML = route.message;
+				console.log(route.message);
 				return false;
 			}
 		} catch(e){
@@ -49,18 +49,21 @@ define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
 
 	}
 
+	function setFromLocation(){
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(function(position){
+				var nearest = tube.nearest(position.coords.latitude, position.coords.longitude);
+				fromEl.value = nearest;
+			});
+		}
+	}
+
+	function showJourney(e){
+		setTimeout(function(){getRoute(fromEl.value, toEl.value);}, 500);
+	}
+
 	return {
 		init: function () {
-
-			fromEl.value = '';
-
-			if (navigator.geolocation) {
-				navigator.geolocation.getCurrentPosition(function(position){
-					console.log(position.coords.latitude + ", " + position.coords.longitude);
-					var nearest = tube.nearest(position.coords.latitude, position.coords.longitude);
-					fromEl.value = nearest;
-				});
-			}
 
 			vis.init(routeDisplay);
 
@@ -74,14 +77,18 @@ define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
 
 			toEl.focus();
 
-			goBtn.onclick = function () {
-				return getRoute(fromEl.value, toEl.value);
-			};
+			goBtn.onclick = showJourney;
+
+			$(toEl).on('typeahead:selected', showJourney);
+			$(toEl).on('typeahead:autocompleted', showJourney);
 
 			changeFromBtn.onclick = function () {
 				fromEl.focus();
 				return false;
 			};
+
+			setFromLocation();
+
 
 		}
 	};
