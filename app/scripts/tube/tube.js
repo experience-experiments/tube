@@ -1,6 +1,6 @@
 'use strict';
 
-define(['network', 'stations', 'connections'], function (Network, stations, connections) {
+define(['tube/network', 'tube/stations', 'tube/connections'], function (Network, stations, connections) {
 
 	// create a Network using the London Underground's stations and connections
 	var network = new Network(stations, connections);

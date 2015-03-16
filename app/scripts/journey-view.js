@@ -1,9 +1,9 @@
 'use strict';
 
-define(['d3', 'tube'], function (d3, tube) {
+define(['d3', 'tube/tube'], function (d3, tube) {
 
 	var parentEl;
-	var vis;
+	var svgView;
 
 	// the height of each station list element
 	var stationGap = 50;
@@ -37,10 +37,10 @@ define(['d3', 'tube'], function (d3, tube) {
 		d3.select(parentEl).select("svg").remove();
 
 		var height = (stationGap * route.length) + 20;
-		vis = d3.select(parentEl).append("svg").style("height", height + 'px');
+		svgView = d3.select(parentEl).append("svg").style("height", height + 'px');
 
 		// data join
-		var nodes = vis.selectAll(".station").data(route);
+		var nodes = svgView.selectAll(".station").data(route);
 
 		// enter
 		var station = nodes.enter()
@@ -79,7 +79,7 @@ define(['d3', 'tube'], function (d3, tube) {
 
 
 
-		vis.selectAll(".station")
+		svgView.selectAll(".station")
 			.data(route)
 			.attr("data-type", function(s,i){
 				switch(stationType(route, i)){
@@ -94,7 +94,7 @@ define(['d3', 'tube'], function (d3, tube) {
 				}
 			});
 
-		vis.selectAll(".station-connection")
+		svgView.selectAll(".station-connection")
 			.data(route)
 			.attr("fill", function (s, i) {
 				if (i < route.length - 1) {
@@ -109,7 +109,7 @@ define(['d3', 'tube'], function (d3, tube) {
 			})
 			.attr("x", -connectionBarWidth / 2);
 
-		vis.selectAll(".station-stop")
+		svgView.selectAll(".station-stop")
 			.data(route)
 			.attr("r", function(s, i){
 				switch(stationType(route, i)){
@@ -123,20 +123,20 @@ define(['d3', 'tube'], function (d3, tube) {
 				}
 			});
 
-		vis.selectAll(".station-name")
+		svgView.selectAll(".station-name")
 			.data(route)
 			.text(function (s) {
 				return s.name;
 			});
 
-		vis.selectAll(".station-description-label")
+		svgView.selectAll(".station-description-label")
 			.data(route)
 			.text(function (s, i) {
 				return tube.routeDescription(i, route);
 			});
 
-		var dy = vis.select('.station[data-type="finish"] .station-name').node().getBBox().width + 60;
-		vis.selectAll('.station[data-type="finish"] a text').attr("dx",dy);
+		var dy = svgView.select('.station[data-type="finish"] .station-name').node().getBBox().width + 60;
+		svgView.selectAll('.station[data-type="finish"] a text').attr("dx",dy);
 
 
 	}
@@ -145,7 +145,7 @@ define(['d3', 'tube'], function (d3, tube) {
 		init: function (parent) {
 			parentEl = parent;
 			parentEl.innerHTML = '';
-			vis = d3.select(parentEl).append("svg");
+			svgView = d3.select(parentEl).append("svg");
 		},
 
 		showRoute: showWithSVG

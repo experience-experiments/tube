@@ -1,6 +1,6 @@
 'use strict';
 
-define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
+define(['tube/tube', 'journey-view','jquery','typeahead'], function (tube, journeyView, $) {
 
 	var plannerForm = document.querySelector('.planner-form');
 	var routeDisplay = document.querySelector('#route-display');
@@ -19,14 +19,14 @@ define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
 		};
 	};
 
-	function getRoute(from, to) {
+	function viewJourney(from, to) {
 		try{
 			var route = tube.route(from, to);
 			if (route.success === true) {
 				$(plannerForm).hide();
 				$(routeDisplay).show();
 
-				vis.showRoute(route.path);
+				journeyView.showRoute(route.path);
 				document.querySelector('.cancel-link').onclick = function () {
 					$(routeDisplay).hide();
 					$(plannerForm).show();
@@ -58,13 +58,14 @@ define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
 	}
 
 	function showJourney(){
-		setTimeout(function(){getRoute(fromEl.value, toEl.value);}, 500);
+		$(toEl).blur();
+		setTimeout(function(){viewJourney(fromEl.value, toEl.value);}, 500);
 	}
 
 	return {
 		init: function () {
 
-			vis.init(routeDisplay);
+			journeyView.init(routeDisplay);
 
 			var stationNames = tube.stationNames();
 

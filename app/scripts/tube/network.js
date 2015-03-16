@@ -1,6 +1,6 @@
 'use strict';
 
-define(['pqueue'], function (PQueue) {
+define(['tube/pqueue'], function (PQueue) {
 
 	/** Station constructor */
 	function Station(args) {
