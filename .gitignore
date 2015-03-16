@@ -13,3 +13,4 @@ app/styles/main.css
 *.crx
 
 *.pem
+aws-s3-credentials.json

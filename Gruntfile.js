@@ -24,6 +24,22 @@ module.exports = function (grunt) {
 
 		// Project settings
 		config: config,
+		awsConfig: grunt.file.readJSON("aws-s3-credentials.json"),
+
+		s3: {
+			options: {
+				accessKeyId: "<%= awsConfig.accessKeyId %>",
+				secretAccessKey: "<%= awsConfig.secretAccessKey %>",
+				bucket: "tube.rmalabs.com",
+				region: "eu-west-1",
+				access: "public-read",
+				gzip: true
+			},
+			publish: {
+				cwd: "dist/",
+				src: "**"
+			}
+		},
 
 		// Watches files for changes and runs tasks based on the changed files
 		watch: {
@@ -383,7 +399,8 @@ module.exports = function (grunt) {
 		'htmlmin',
 		'requirejs:dist',
 		//'uglify:dist',
-		'manifest:generate'
+		'manifest:generate',
+		's3:publish'
 	]);
 
 	grunt.registerTask('default', [
