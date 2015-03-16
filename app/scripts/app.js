@@ -52,7 +52,15 @@ define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
 	return {
 		init: function () {
 
-			fromEl.value = 'Liverpool Street';
+			fromEl.value = '';
+
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(function(position){
+					console.log(position.coords.latitude + ", " + position.coords.longitude);
+					var nearest = tube.nearest(position.coords.latitude, position.coords.longitude);
+					fromEl.value = nearest;
+				});
+			}
 
 			vis.init(routeDisplay);
 
@@ -71,7 +79,6 @@ define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
 			};
 
 			changeFromBtn.onclick = function () {
-				fromEl.value = '';
 				fromEl.focus();
 				return false;
 			};

@@ -46,6 +46,20 @@ define(['network', 'stations', 'connections'], function (Network, stations, conn
 			return network;
 		},
 
+		nearest: function (lat, long){
+			var nearestIndex = stations.reduce(function(value, currentStation, index){
+				var x = Math.abs( currentStation[2] - lat );
+				var y = Math.abs( currentStation[3] - long );
+				var z = Math.sqrt( x * x + y * y);
+				if(z <= value.dist){
+					return {dist: z, index: index}
+				} else {
+					return value;
+				}
+			},{dist:1000, index: -1});
+			return stations[nearestIndex.index][1];
+		},
+
 		// return a description that should be displayed
 		// alongside the i'th station on the route
 		routeDescription: function (i, route) {

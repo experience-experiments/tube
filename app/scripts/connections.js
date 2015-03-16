@@ -129,7 +129,6 @@ define([], function () {
 		}
 	];
 
-
 	var jubilee = [
 		"Jubilee",
 		{cssName: "jubilee",
@@ -140,7 +139,6 @@ define([], function () {
 			connections: [465, 82, 394, 285, 535, 334, 139, 565, 279, 545, 185, 486, 461, 17, 51, 206, 558, 531, 453, 304, 39, 77, 78, 348, 79, 544, 471]
 		}
 	];
-
 
 	var dlr = [
 		"DLR",
