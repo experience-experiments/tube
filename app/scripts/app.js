@@ -8,7 +8,6 @@ define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
 	var toEl = document.querySelector('#to-station');
 
 	var changeFromBtn = document.querySelector('#change-from');
-	var goBtn = document.querySelector('#go');
 
 
 	var stationMatcher = function(stationNames){
@@ -58,7 +57,7 @@ define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
 		}
 	}
 
-	function showJourney(e){
+	function showJourney(){
 		setTimeout(function(){getRoute(fromEl.value, toEl.value);}, 500);
 	}
 
@@ -77,8 +76,6 @@ define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
 
 			toEl.focus();
 
-			goBtn.onclick = showJourney;
-
 			$(toEl).on('typeahead:selected', showJourney);
 			$(toEl).on('typeahead:autocompleted', showJourney);
 
@@ -88,7 +85,6 @@ define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
 			};
 
 			setFromLocation();
-
 
 		}
 	};

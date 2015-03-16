@@ -15,7 +15,7 @@ define(['d3', 'tube'], function (d3, tube) {
 		middle:2,
 		change:3,
 		finish:4
-	}
+	};
 
 	function stationType(route, i){
 		if (i === 0) {

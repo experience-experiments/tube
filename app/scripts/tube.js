@@ -52,7 +52,7 @@ define(['network', 'stations', 'connections'], function (Network, stations, conn
 				var y = Math.abs( currentStation[3] - long );
 				var z = Math.sqrt( x * x + y * y);
 				if(z <= value.dist){
-					return {dist: z, index: index}
+					return {dist: z, index: index};
 				} else {
 					return value;
 				}
