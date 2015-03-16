@@ -6,6 +6,7 @@
     "requirejs": "~2.1.16",
     "jquery": "~2.1.3",
     "typeahead.js": "~0.10.5",
-    "pure": "~0.6.0"
+    "pure": "~0.6.0",
+    "addtohomescreen": "https://raw.githubusercontent.com/cubiq/add-to-homescreen/master/src/addtohomescreen.js"
   }
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
+define(['tube', 'vis','jquery','addtohomescreen','typeahead'], function (tube, vis, $) {
 
 	var plannerForm = document.querySelector('.planner-form');
 	var routeDisplay = document.querySelector('#route-display');
@@ -86,6 +86,8 @@ define(['tube', 'vis','jquery','typeahead'], function (tube, vis, $) {
 				fromEl.focus();
 				return false;
 			};
+
+			window.addToHomescreen();
 
 			setFromLocation();
 
