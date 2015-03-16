@@ -27,7 +27,6 @@ header {
 
 .planner-form {
 
-  padding-left: $padding;
   padding-top: $padding;
 
   .row{
@@ -56,14 +55,12 @@ header {
 
     input {
       margin-left: 10px;
-      min-width: 200px;
     }
   }
 
 }
 
 #route-display {
-  padding-left: $padding;
 
   g.station text{
     font-size: 0.9em;
@@ -103,7 +100,7 @@ header {
 .typeahead,
 .tt-query,
 .tt-hint {
-  min-width: 200px;
+  min-width: 150px;
   height: 22px;
   padding: 2px 3px;
   font-size: 14px;
