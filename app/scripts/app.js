@@ -7,9 +7,6 @@ define(['tube/tube', 'journey-view','jquery','typeahead'], function (tube, journ
 	var fromEl = document.querySelector('#from-station');
 	var toEl = document.querySelector('#to-station');
 
-	var changeFromBtn = document.querySelector('#change-from');
-
-
 	var stationMatcher = function(stationNames){
 		return function findMatches(query, callback){
 			var matches = stationNames.filter(function(item){
@@ -19,26 +16,28 @@ define(['tube/tube', 'journey-view','jquery','typeahead'], function (tube, journ
 		};
 	};
 
+	function viewPlannerForm(){
+		$(routeDisplay).hide();
+		$(plannerForm).show();
+		toEl.value = '';
+		toEl.focus();
+		return false;
+	}
+
 	function viewJourney(from, to) {
 		try{
-			var route = tube.route(from, to);
-			if (route.success === true) {
-				$(plannerForm).hide();
-				$(routeDisplay).show();
+			if(from !== '' && to !== ''){
+				var route = tube.route(from, to);
+				if (route.success === true) {
+					$(plannerForm).hide();
+					$(routeDisplay).show();
 
-				journeyView.showRoute(route.path);
-				document.querySelector('.cancel-link').onclick = function () {
-					$(routeDisplay).hide();
-					$(plannerForm).show();
-					toEl.value = '';
-					toEl.focus();
-					return false;
-				};
-				return false;
-			} else {
-				$(routeDisplay).show();
-				console.log(route.message);
-				return false;
+					journeyView.showRoute(route.path);
+
+					document.querySelector('.cancel-link').onclick = viewPlannerForm;
+				} else {
+					console.log(route.message);
+				}
 			}
 		} catch(e){
 			console.log(e);
@@ -58,12 +57,17 @@ define(['tube/tube', 'journey-view','jquery','typeahead'], function (tube, journ
 	}
 
 	function showJourney(){
-		$(toEl).blur();
 		setTimeout(function(){viewJourney(fromEl.value, toEl.value);}, 500);
+	}
+
+	function triggerSelection(){
+		$(toEl).blur();
 	}
 
 	return {
 		init: function () {
+
+			setFromLocation();
 
 			journeyView.init(routeDisplay);
 
@@ -71,21 +75,20 @@ define(['tube/tube', 'journey-view','jquery','typeahead'], function (tube, journ
 
 			$('.typeahead').typeahead({
 				hint: true,
-				minLength: 2,
+				minLength: 1,
 				highlight: true
 			},{name: 'stations', displayKey:'value', source:stationMatcher(stationNames)});
 
 			toEl.focus();
 
-			$(toEl).on('typeahead:selected', showJourney);
-			$(toEl).on('typeahead:autocompleted', showJourney);
+			$(toEl).on('blur', showJourney);
+			$(toEl).on('typeahead:selected', triggerSelection);
+			$(toEl).on('typeahead:autocompleted', triggerSelection);
 
-			changeFromBtn.onclick = function () {
-				fromEl.focus();
-				return false;
-			};
 
-			setFromLocation();
+			$(fromEl).on('focus', function () {
+				fromEl.value = '';
+			});
 
 		}
 	};
