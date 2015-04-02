@@ -14,3 +14,7 @@ app/styles/main.css
 
 *.pem
 aws-s3-credentials.json
+generate/clj-to-stratford
+generate/islington-to-clj
+generate/islington-to-croydon
+generate/richmond-to-stratford
