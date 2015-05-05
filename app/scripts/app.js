@@ -1,11 +1,17 @@
 'use strict';
 
-define(['tube/tube', 'journey-view','jquery','typeahead'], function (tube, journeyView, $) {
+define(['tube/tube', 'journey-view', 'planner-view', 'jquery'], function (tube, journeyView, plannerView, $) {
 
 	var plannerForm = document.querySelector('.planner-form');
 	var routeDisplay = document.querySelector('#route-display');
-	var fromEl = document.querySelector('#from-station');
-	var toEl = document.querySelector('#to-station');
+
+	var nearestStation;
+
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(function(position){
+			nearestStation = tube.nearest(position.coords.latitude, position.coords.longitude);
+		});
+	}
 
 	var stationMatcher = function(stationNames){
 		return function findMatches(query, callback){
@@ -16,11 +22,10 @@ define(['tube/tube', 'journey-view','jquery','typeahead'], function (tube, journ
 		};
 	};
 
-	function viewPlannerForm(){
+	function cancelRouteView(){
 		$(routeDisplay).hide();
 		$(plannerForm).show();
-		toEl.value = '';
-		toEl.focus();
+		plannerView.focusToPlan();
 		return false;
 	}
 
@@ -34,7 +39,6 @@ define(['tube/tube', 'journey-view','jquery','typeahead'], function (tube, journ
 
 					journeyView.showRoute(route.path);
 
-					document.querySelector('.cancel-link').onclick = viewPlannerForm;
 				} else {
 					console.log(route.message);
 				}
@@ -44,51 +48,19 @@ define(['tube/tube', 'journey-view','jquery','typeahead'], function (tube, journ
 		}finally {
 			return false;
 		}
-
-	}
-
-	function setFromLocation(){
-		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition(function(position){
-				var nearest = tube.nearest(position.coords.latitude, position.coords.longitude);
-				fromEl.value = nearest;
-			});
-		}
-	}
-
-	function showJourney(){
-		setTimeout(function(){viewJourney(fromEl.value, toEl.value);}, 500);
-	}
-
-	function triggerSelection(){
-		$(toEl).blur();
 	}
 
 	return {
 		init: function () {
 
-			setFromLocation();
-
-			journeyView.init(routeDisplay);
-
-			var stationNames = tube.stationNames();
-
-			$('.typeahead').typeahead({
-				hint: true,
-				minLength: 1,
-				highlight: true
-			},{name: 'stations', displayKey:'value', source:stationMatcher(stationNames)});
-
-			toEl.focus();
-
-			$(toEl).on('blur', showJourney);
-			$(toEl).on('typeahead:selected', triggerSelection);
-			$(toEl).on('typeahead:autocompleted', triggerSelection);
-
-
-			$(fromEl).on('focus', function () {
-				fromEl.value = '';
+			plannerView.init(plannerForm, {
+				matcherFunction: stationMatcher(tube.stationNames()),
+				submitHandler: viewJourney
 			});
+
+			plannerView.setFrom(nearestStation);
+
+			journeyView.init(routeDisplay, cancelRouteView);
 
 		}
 	};

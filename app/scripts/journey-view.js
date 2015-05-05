@@ -4,6 +4,7 @@ define(['d3', 'tube/tube'], function (d3, tube) {
 
 	var parentEl;
 	var svgView;
+	var cancelHandler;
 
 	// the height of each station list element
 	var stationGap = 50;
@@ -75,6 +76,7 @@ define(['d3', 'tube/tube'], function (d3, tube) {
 				return stationType(route, i) === stationTypes.finish;
 			})
 			.append('a').attr("class","cancel-link")
+			.on('click', cancelHandler)
 			.append('text').text("⊗").attr("dx","200").attr("dy","10");
 
 
@@ -142,9 +144,10 @@ define(['d3', 'tube/tube'], function (d3, tube) {
 	}
 
 	return {
-		init: function (parent) {
+		init: function (parent, cancelFunction) {
 			parentEl = parent;
 			parentEl.innerHTML = '';
+			cancelHandler = cancelFunction;
 			svgView = d3.select(parentEl).append("svg");
 		},
 
