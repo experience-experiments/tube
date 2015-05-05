@@ -24,7 +24,7 @@ module.exports = function (grunt) {
 
 		// Project settings
 		config: config,
-		awsConfig: grunt.file.readJSON("aws-s3-credentials.json"),
+		awsConfig: grunt.file.exists('aws-s3-credentials.json')?grunt.file.readJSON('aws-s3-credentials.json'):{'accessKeyId':'undefined'},
 
 		s3: {
 			options: {
