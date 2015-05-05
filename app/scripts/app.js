@@ -1,15 +1,16 @@
 'use strict';
 
-define(['tube/tube', 'journey-view', 'planner-view', 'jquery'], function (tube, journeyView, plannerView, $) {
+define(['tube/tube', 'journey-view', 'planner-view'], function (tube, journeyView, plannerView) {
 
 	var plannerForm = document.querySelector('.planner-form');
 	var routeDisplay = document.querySelector('#route-display');
 
-	var nearestStation;
+	var nearestStation = '...';
 
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(function(position){
 			nearestStation = tube.nearest(position.coords.latitude, position.coords.longitude);
+			plannerView.setFrom(nearestStation);
 		});
 	}
 
@@ -23,8 +24,8 @@ define(['tube/tube', 'journey-view', 'planner-view', 'jquery'], function (tube, 
 	};
 
 	function cancelRouteView(){
-		$(routeDisplay).hide();
-		$(plannerForm).show();
+		routeDisplay.style.display = 'none';
+		plannerForm.style.display = 'block';
 		plannerView.focusToPlan();
 		return false;
 	}
@@ -34,8 +35,8 @@ define(['tube/tube', 'journey-view', 'planner-view', 'jquery'], function (tube, 
 			if(from !== '' && to !== ''){
 				var route = tube.route(from, to);
 				if (route.success === true) {
-					$(plannerForm).hide();
-					$(routeDisplay).show();
+					plannerForm.style.display = 'none';
+					routeDisplay.style.display = 'block';
 
 					journeyView.showRoute(route.path);
 
@@ -57,8 +58,6 @@ define(['tube/tube', 'journey-view', 'planner-view', 'jquery'], function (tube, 
 				matcherFunction: stationMatcher(tube.stationNames()),
 				submitHandler: viewJourney
 			});
-
-			plannerView.setFrom(nearestStation);
 
 			journeyView.init(routeDisplay, cancelRouteView);
 
