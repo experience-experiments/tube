@@ -13,7 +13,6 @@ module.exports = function (grunt) {
 
 	// Time how long tasks take. Can help when optimizing build times
 	require('time-grunt')(grunt);
-
 	// Configurable paths
 	var config = {
 		app: 'app',
@@ -91,7 +90,8 @@ module.exports = function (grunt) {
 				options: {
 					open: true,
 					base: [
-						'<%= config.app %>'
+						'<%= config.app %>',
+						'.tmp'
 					]
 				}
 			},
@@ -186,120 +186,66 @@ module.exports = function (grunt) {
 			}
 		},
 
-		requirejs: {
-			dist: {
-				// Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
+		browserify: {
+			options: {
+				transform: ["partialify", "debowerify"]
+			},
+			dev: {
+				src: ['<%= config.app %>/scripts/main.js'],
+				dest: '.tmp/scripts/tubeapp.js',
 				options: {
-					baseUrl: 'app/scripts',
-					paths: {
-						"requireLib": "../bower_components/requirejs/require"
-					},
-					mainConfigFile: 'app/scripts/config.js',
-					name: "main",
-					include: ['requireLib'],
-					insertRequire: ['app'],
-					out: '<%= config.dist %>/scripts/all.js',
-					optimize: 'none',
-					preserveLicenseComments: false,
-					useStrict: true,
-					wrap: true,
-					keepBuildDir: true
+					debug: true
 				}
+			},
+			dist: {
+				src: ['<%= config.app %>/scripts/main.js'],
+				dest: '<%= config.dist %>/scripts/tubeapp.js'
 			}
+		},
+
+		concurrent: {
+			server: [
+				'compass:server',
+				'copy:styles',
+				'browserify:dev'
+			],
+			test: [
+				'compass:test',
+				'copy:styles',
+				'jshint',
+				'browserify:dev'
+			],
+			dist: [
+				'compass:dist',
+				'copy:styles',
+				'browserify:dist'
+			]
 		},
 
 		useminPrepare: {
 			options: {
 				dest: '<%= config.dist %>'
 			},
-			html: [
-				'<%= config.app %>/index.html'
-			]
+			html: '<%= config.app %>/index.html'
 		},
 
-		// Performs rewrites based on rev and the useminPrepare configuration
 		usemin: {
 			options: {
-				assetsDirs: ['<%= config.dist %>', '<%= config.dist %>/images']
+				assetsDirs: ['<%= config.dist %>']
 			},
-			html: ['<%= config.dist %>/index.html'],
+			html: ['<%= config.dist %>/{,*/}*.html'],
 			css: ['<%= config.dist %>/styles/{,*/}*.css']
 		},
 
-		// The following *-min tasks produce minifies files in the dist folder
-		imagemin: {
-			dist: {
-				files: [
-					{
-						expand: true,
-						cwd: '<%= config.app %>/images',
-						src: '{,*/}*.{gif,jpeg,jpg,png}',
-						dest: '<%= config.dist %>/images'
-					}
-				]
-			}
-		},
-
-		svgmin: {
-			dist: {
-				files: [
-					{
-						expand: true,
-						cwd: '<%= config.app %>/images',
-						src: '{,*/}*.svg',
-						dest: '<%= config.dist %>/images'
-					}
-				]
-			}
-		},
-
-		htmlmin: {
-			dist: {
-				options: {
-					// removeCommentsFromCDATA: true,
-					// collapseWhitespace: true,
-					// collapseBooleanAttributes: true,
-					// removeAttributeQuotes: true,
-					// removeRedundantAttributes: true,
-					// useShortDoctype: true,
-					// removeEmptyAttributes: true,
-					// removeOptionalTags: true
-				},
-				files: [
-					{
-						expand: true,
-						cwd: '<%= config.dist %>',
-						src: 'index.html',
-						dest: '<%= config.dist %>'
-					}
-				]
-			}
-		},
-
-		// By default, your `index.html`'s <!-- Usemin block --> will take care of
-		// minification. These next options are pre-configured if you do not wish
-		// to use the Usemin blocks.
-		// cssmin: {
-		//   dist: {
-		//     files: {
-		//       '<%= config.dist %>/styles/main.css': [
-		//         '<%= config.app %>/styles/{,*/}*.css'
-		//       ]
-		//     }
-		//   }
-		// },
 		uglify: {
 			dist: {
 				files: {
-					'<%= config.dist %>/scripts/all.js': [
-						'<%= config.dist %>/scripts/all.js'
+					'<%= config.dist %>/scripts/tubeapp.js': [
+						'<%= config.dist %>/scripts/tubeapp.js'
 					]
 				}
 			}
 		},
-		// concat: {
-		//   dist: {}
-		// },
 
 		// Copies remaining files to places other tasks can use
 		copy: {
@@ -347,22 +293,6 @@ module.exports = function (grunt) {
 				],
 				dest: '<%= config.dist %>/tube.appcache'
 			}
-		},
-
-		// Run some tasks in parallel to speed up build process
-		concurrent: {
-			server: [
-				'compass:server',
-				'copy:styles'
-			],
-			dist: [
-				'compass:dist',
-				'imagemin',
-				'svgmin'
-			],
-			test: [
-				'compass:test'
-			]
 		}
 
 	});
@@ -380,27 +310,18 @@ module.exports = function (grunt) {
 		]);
 	});
 
-
 	grunt.registerTask('test', [
 		'connect:test',
 		'mocha'
 	]);
 
-
 	grunt.registerTask('build', [
 		'clean:dist',
 		'useminPrepare',
 		'concurrent:dist',
-		'concat',
-		'cssmin',
-		'uglify',
 		'copy:dist',
 		'usemin',
-		'htmlmin',
-		'requirejs:dist',
-		//'uglify:dist',
-		'manifest:generate',
-		's3:publish'
+		'manifest:generate'
 	]);
 
 	grunt.registerTask('default', [
