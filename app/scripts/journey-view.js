@@ -1,6 +1,7 @@
 'use strict';
-
-define(['d3', 'tube/tube'], function (d3, tube) {
+(function(){
+	var d3 = require('d3');
+	var tube = require('./tube/tube.js');
 
 	var parentEl;
 	var svgView;
@@ -143,7 +144,7 @@ define(['d3', 'tube/tube'], function (d3, tube) {
 
 	}
 
-	return {
+	module.exports = {
 		init: function (parent, cancelFunction) {
 			parentEl = parent;
 			parentEl.innerHTML = '';
@@ -153,4 +154,4 @@ define(['d3', 'tube/tube'], function (d3, tube) {
 
 		showRoute: showWithSVG
 	};
-});
+})();

@@ -1,8 +1,9 @@
 'use strict';
 
-define([], function () {
+(function(){
 
-	return function () {
+
+	module.exports = function () {
 
 		// the PQueue constructor accepts 2 optional paramaters:
 		// the first is a comparison function used in sorting
@@ -61,4 +62,4 @@ define([], function () {
 
 	};
 
-});
+})();

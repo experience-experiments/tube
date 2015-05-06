@@ -1,6 +1,8 @@
 'use strict';
+(function(){
 
-define(['jquery', 'typeahead'], function ($) {
+	var $ = require('jquery');
+	require('typeahead.js');
 
   var plannerForm;
 	var fromEl;
@@ -25,7 +27,7 @@ define(['jquery', 'typeahead'], function ($) {
 		toEl.focus();
 	}
 
-	return {
+	module.exports = {
 		init: function(element, options){
 			plannerForm = element;
 			toEl = plannerForm.querySelector('#to-station');
@@ -57,4 +59,4 @@ define(['jquery', 'typeahead'], function ($) {
 		focusToPlan: focusToPlan
 	};
 
-});
+})();

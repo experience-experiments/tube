@@ -1,6 +1,6 @@
 'use strict';
+(function(){
 
-define([], function () {
 
 	// [line, direction, ... [connected segments]]
 	var northern = [
@@ -394,7 +394,7 @@ define([], function () {
 		}
 	];
 
-	return [northern,
+	module.exports = [northern,
 		victoria,
 		piccadilly,
 		central,
@@ -407,4 +407,4 @@ define([], function () {
 		waterloo,
 		district,
 		overground];
-});
+})();

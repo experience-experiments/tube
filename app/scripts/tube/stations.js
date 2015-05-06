@@ -1,7 +1,8 @@
 'use strict';
 
-define([], function () {
-	return [
+(function(){
+
+	module.exports = [
 		[0, "Abbey Wood", 51.49078408041, 0.12028637127604, "4"],
 		[1, "Acton", 51.516886963398, -0.26767554257793, "3"],
 		[2, "Acton Central", 51.508757812012, -0.26341579231596, "2"],
@@ -588,4 +589,4 @@ define([], function () {
 		[583, "Shoreditch High Street", 51.523297,-0.075109, "2"]
 
 	];
-});
+})();

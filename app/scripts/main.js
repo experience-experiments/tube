@@ -1,5 +1,8 @@
 'use strict';
+(function(){
+	var app = require('./app.js');
 
-require(['app'], function (app) {
 	app.init();
-});
+
+	module.exports = this;
+})();

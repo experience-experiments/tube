@@ -1,6 +1,9 @@
 'use strict';
+(function(){
 
-define(['tube/tube', 'journey-view', 'planner-view'], function (tube, journeyView, plannerView) {
+	var tube = require('./tube/tube.js');
+	var journeyView = require('./journey-view.js');
+	var plannerView = require('./planner-view.js');
 
 	var plannerForm = document.querySelector('.planner-form');
 	var routeDisplay = document.querySelector('#route-display');
@@ -51,7 +54,7 @@ define(['tube/tube', 'journey-view', 'planner-view'], function (tube, journeyVie
 		}
 	}
 
-	return {
+	module.exports = {
 		init: function () {
 
 			plannerView.init(plannerForm, {
@@ -63,4 +66,5 @@ define(['tube/tube', 'journey-view', 'planner-view'], function (tube, journeyVie
 
 		}
 	};
-});
+
+})();

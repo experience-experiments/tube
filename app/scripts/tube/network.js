@@ -1,6 +1,7 @@
 'use strict';
+(function(){
 
-define(['tube/pqueue'], function (PQueue) {
+	var PQueue = require('./pqueue.js');
 
 	/** Station constructor */
 	function Station(args) {
@@ -276,11 +277,11 @@ define(['tube/pqueue'], function (PQueue) {
 		};
 
 		// only for testing purposes
-		this._travelTime = travelTime;
+		return this;
 
 	};
 
-	return Network;
+	module.exports = {init:Network};
 
 
-});
+})();

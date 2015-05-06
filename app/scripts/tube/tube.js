@@ -1,9 +1,12 @@
 'use strict';
+(function(){
 
-define(['tube/network', 'tube/stations', 'tube/connections'], function (Network, stations, connections) {
+	var Network = require('./network.js');
+	var stations = require('./stations.js');
+	var connections = require('./connections.js');
 
 	// create a Network using the London Underground's stations and connections
-	var network = new Network(stations, connections);
+	var network = Network.init(stations, connections);
 
 	var notability = {
 		last: 4,
@@ -28,7 +31,7 @@ define(['tube/network', 'tube/stations', 'tube/connections'], function (Network,
 		return notability.none;
 	}
 
-	return {
+	module.exports = {
 		stationNames: function () {
 			var names = network.connectedStations.map(function (station) {
 				return {value:station.name};
@@ -38,7 +41,6 @@ define(['tube/network', 'tube/stations', 'tube/connections'], function (Network,
 
 		route: function (from, to) {
 			var r = network.route(from, to);
-//      debug(r.path);
 			return r;
 		},
 
@@ -81,4 +83,4 @@ define(['tube/network', 'tube/stations', 'tube/connections'], function (Network,
 			}
 		}
 	};
-});
+})();
