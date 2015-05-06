@@ -1,5 +1,5 @@
 'use strict';
 
-require(['app'], function (app) {
+require(['app','../styles/main.css'], function (app) {
 	app.init();
 });

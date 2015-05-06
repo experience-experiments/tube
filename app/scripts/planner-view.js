@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'typeahead'], function ($) {
+define(['jquery', "typeahead.js"], function ($) {
 
   var plannerForm;
 	var fromEl;

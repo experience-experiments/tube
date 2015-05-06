@@ -1,6 +1,6 @@
 'use strict';
 
-define(['d3', 'tube/tube'], function (d3, tube) {
+define(['d3', './tube/tube'], function (d3, tube) {
 
 	var parentEl;
 	var svgView;
